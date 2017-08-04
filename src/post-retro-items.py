@@ -45,21 +45,46 @@ def get_in_progress_retro_items():
 
     return descriptions
 
+def build_slack_map_dict(initials_slack_map):
+
+    slack_map_dict = {}
+    users_array = initials_slack_map.split(",")
+    for user in users_array:
+        user_and_handle = user.split(":")
+        slack_name_with_link="<@" + user_and_handle[2] + "|" + user_and_handle[1] + ">"
+        if user_and_handle[1] == "cloud-cache-eng":
+            slack_name_with_link="<!subteam^" + user_and_handle[2] + "|" + user_and_handle[1] + ">"
+        slack_map_dict[user_and_handle[0]] = slack_name_with_link
+
+    return slack_map_dict
+
+def add_slack_handles(retro_items, slack_map_dict):
+    retro_items_with_slack_handles = []
+    for retro_item in retro_items:
+        retro_items_with_slack_handles.append(retro_item)
+        for (initial, slack_handle) in slack_map_dict.items():
+            if "[" + initial + "]" in retro_item:
+                del retro_items_with_slack_handles[-1]
+                retro_items_with_slack_handles.append(slack_handle + " " + retro_item)
+                break
+    return retro_items_with_slack_handles
+
 if __name__ == "__main__":
     print_debug("hello_message", "Hello There!")
 
-    script_path, postfacto_token, retro_id, slack_token, slack_channel = sys.argv
+    script_path, postfacto_token, retro_id, slack_token, slack_channel, initials_slack_map = sys.argv
 
     print_debug("postfacto_token", postfacto_token)
     print_debug("retro_id", retro_id)
     print_debug("slack_token", slack_token)
     print_debug("slack_channel", slack_channel)
+    print_debug("initials_slack_map", initials_slack_map)
 
     retro_items = get_in_progress_retro_items()
+    retro_items_with_slack_handles = add_slack_handles(retro_items, build_slack_map_dict(initials_slack_map))
 
-    #TODO: Maybe add personal @user to annoy everyone
-    good_morning_message = ["*Good morning, fellow rabbits*:rabbit2:",]
-    retro_items_message = ["(%s) Retro items:" % len(retro_items), "```"] + retro_items + ["```"]
+    good_morning_message = ["*Goooooooooooooooood morning Gems! :gem:",]
+    retro_items_message = ["(%s) Retro items:" % len(retro_items_with_slack_handles)] + retro_items_with_slack_handles
     retro_items_message = good_morning_message + retro_items_message
 
     tracker_reminder_message=["*Also, don't forget to update <https://www.pivotaltracker.com/dashboard|Pivotal Tracker>*"]
@@ -67,4 +92,3 @@ if __name__ == "__main__":
 
     send_message("\n".join(retro_items_message))
     send_message("\n".join(tracker_reminder_message))
-    # send_message("\n".join(standup_vote_message))
