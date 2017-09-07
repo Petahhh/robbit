@@ -87,8 +87,8 @@ if __name__ == "__main__":
     retro_items_message = ["(%s) Retro items:" % len(retro_items_with_slack_handles)] + retro_items_with_slack_handles
     retro_items_message = good_morning_message + retro_items_message
 
-    tracker_reminder_message=["*Also, don't forget to update <https://www.pivotaltracker.com/dashboard|Pivotal Tracker>*"]
+    postfacto_reminder_message=["All done? Check off your tasks at: https://postfacto.io/retros/" + retro_id]
     standup_vote_message=['</poll> <!here> "*Did you enjoy the standup this morning?*" "yay" "meh" "nay"']
 
     send_message("\n".join(retro_items_message))
-    send_message("\n".join(tracker_reminder_message))
+    send_message("\n".join(postfacto_reminder_message))
