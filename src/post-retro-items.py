@@ -87,7 +87,7 @@ if __name__ == "__main__":
     retro_items_message = ["(%s) Retro items:" % len(retro_items_with_slack_handles)] + retro_items_with_slack_handles
     retro_items_message = good_morning_message + retro_items_message
 
-    postfacto_reminder_message=["All done? Check off your tasks at: https://postfacto.io/retros/" + retro_id]
+    postfacto_reminder_message=["All done? Check off your tasks at: https://retros.cfapps.io/retros/" + retro_id]
     standup_vote_message=['</poll> <!here> "*Did you enjoy the standup this morning?*" "yay" "meh" "nay"']
 
     send_message("\n".join(retro_items_message))
